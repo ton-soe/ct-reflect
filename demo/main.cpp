@@ -9,14 +9,17 @@ struct vector
 REFLECT(vector, x, y, z)
 
 template<typename T, size_t N = 0>
-void Print(const T& value)
+void Print(T& value)
 {
-	auto fields = ctr::Reflect<T>::Fields();
-	auto field = std::get<N>(fields);
-	std::cout << field.name << " = " << value.*field.ptr << std::endl;
-	if constexpr (N < std::tuple_size_v<decltype(fields)> -1)
+	constexpr auto name = ctr::FieldName<T, N>();
+	auto fieldValue = ctr::FieldPtr<T, N>(value);
+
+	std::cout << name << " = " << *fieldValue << std::endl;
+
+	if constexpr (N < ctr::FieldSize<vector>() - 1)
 		Print<T, N + 1>(value);
 }
+
 
 int main(int argc, char** argv)
 {

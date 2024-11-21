@@ -3,7 +3,7 @@ Compile Time Reflection
 
 # Usage
 Supports Clang, GCC (Untested). Does not support MSVC.\
-Requires C++17 or above.
+Requires C++20 or above.
 
 # Example
 ```
@@ -23,6 +23,10 @@ int main()
     auto field = std::get<1>(ctr::Reflect<Foo>::Fields());
     printf("%s = %f\n", field.name, f.*field.ptr);
 }
+```
+Produces
+```
+b = 3.14
 ```
 
 # References
