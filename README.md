@@ -24,3 +24,6 @@ int main()
     printf("%s = %f\n", field.name, f.*field.ptr);
 }
 ```
+
+# References
+[The Map Macro](https://github.com/swansontec/map-macro)
