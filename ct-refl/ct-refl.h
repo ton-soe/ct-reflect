@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <tuple>
 #include "map-macro.h"
 
 namespace ctr
