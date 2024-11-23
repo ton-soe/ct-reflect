@@ -16,7 +16,7 @@ void Print(T& value)
 
 	std::cout << name << " = " << *fieldValue << std::endl;
 
-	if constexpr (N < ctr::FieldSize<vector>() - 1)
+	if constexpr (N < ctr::FieldCount<vector>() - 1)
 		Print<T, N + 1>(value);
 }
 

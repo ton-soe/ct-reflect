@@ -23,9 +23,15 @@ namespace ctr
 	};
 
 	template<typename T>
-	constexpr size_t FieldSize()
+	constexpr size_t FieldCount()
 	{
 		return Reflect<T>::FieldSize;
+	}
+
+	template<typename T, size_t Index>
+	constexpr size_t SizeOfField()
+	{
+		return sizeof(std::remove_pointer_t<decltype(std::tuple_element_t<Index, typename Reflect<T>::Fields>::ptr)>);
 	}
 
 	template<typename T, size_t Index>
@@ -36,6 +42,12 @@ namespace ctr
 
 	template<typename T, size_t Index>
 	auto FieldPtr(T& value)
+	{
+		return &(value.*std::tuple_element_t<Index, typename Reflect<T>::Fields>::ptr);
+	}
+
+	template<typename T, size_t Index>
+	auto FieldPtr(const T& value)
 	{
 		return &(value.*std::tuple_element_t<Index, typename Reflect<T>::Fields>::ptr);
 	}
