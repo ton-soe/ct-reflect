@@ -5,7 +5,7 @@
 
 namespace ctr
 {
-	template<typename TStruct, typename TField, size_t TElem, CTString TFieldName, TField TStruct::* TPtr>
+	template<class TStruct, typename TField, size_t TElem, CTString TFieldName, TField TStruct::* TPtr>
 	struct FieldInfo
 	{
 		using FieldType = TField;
@@ -16,37 +16,40 @@ namespace ctr
 		constexpr static TField TStruct::* const ptr = TPtr;
 	};
 
-	template<typename T>
+	template<class T>
 	struct Reflect
 	{
-		static_assert(false, "Reflect not defined for type T");
+		using _enabled = std::false_type;
 	};
 
-	template<typename T>
+	template<typename TValue>
+	concept Reflectable = std::is_same_v<typename Reflect<TValue>::_enabled, std::true_type>;
+
+	template<Reflectable T>
 	constexpr size_t FieldCount()
 	{
 		return Reflect<T>::FieldSize;
 	}
 
-	template<typename T, size_t Index>
+	template<Reflectable T, size_t Index>
 	constexpr size_t SizeOfField()
 	{
 		return sizeof(std::remove_pointer_t<decltype(std::tuple_element_t<Index, typename Reflect<T>::Fields>::ptr)>);
 	}
 
-	template<typename T, size_t Index>
+	template<Reflectable T, size_t Index>
 	constexpr char const* const FieldName()
 	{
 		return std::tuple_element_t<Index, typename Reflect<T>::Fields>::name;
 	}
 
-	template<typename T, size_t Index>
+	template<Reflectable T, size_t Index>
 	auto FieldPtr(T& value)
 	{
 		return &(value.*std::tuple_element_t<Index, typename Reflect<T>::Fields>::ptr);
 	}
 
-	template<typename T, size_t Index>
+	template<Reflectable T, size_t Index>
 	auto FieldPtr(const T& value)
 	{
 		return &(value.*std::tuple_element_t<Index, typename Reflect<T>::Fields>::ptr);
@@ -63,6 +66,7 @@ namespace ctr\
 	template<>\
 	struct Reflect<Class>\
 	{\
+		using _enabled = std::true_type;\
 		using Type = Class;\
 		\
 		constexpr static size_t beg = __COUNTER__ + 1;\
